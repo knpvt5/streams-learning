@@ -17,6 +17,11 @@ function startServer(responseData) {
       return;
     }
 
+    req.on("data", (data) => {
+      console.log("Data event", data);
+      fs.writeFile("received.txt", data);
+    });
+
     // res.end(Buffer.from(responseData.buffer));
     // res.end(uint8Array);
     res.write(uint8Array, () => {
@@ -31,5 +36,3 @@ function startServer(responseData) {
     console.log("Listening on http://localhost:3000");
   });
 }
-
-

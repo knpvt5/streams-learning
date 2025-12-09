@@ -3,18 +3,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const button = document.getElementById("ask");
   const input = document.getElementById("question");
 
-//   debugger
+  //   debugger
   button.onclick = () => {
     console.log(input.value);
+    callServer(input.value);
   };
 
-//   button.ondblclick = () => {
-//     console.log("Double Clicked");
-//   };
+  //   button.ondblclick = () => {
+  //     console.log("Double Clicked");
+  //   };
 
   onkeydown = (event) => {
     if (event.key === "Enter") {
-        event.preventDefault();
+      event.preventDefault();
       button.click();
     }
   };
@@ -23,9 +24,17 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(input.value);
   }); */
 
-  fetch("http://localhost:3000/")
-    .then((res) => res.text())
-    .then((res) => {
-      answer.innerHTML = res;
-    });
+  function callServer(data) {
+    fetch("http://localhost:3000/", {
+      method: "POST",
+      body: data,
+    })
+      .then((res) => res.text())
+      .then((res) => {
+        answer.innerHTML = res;
+      });
+  }
+
+
+  //DOm end
 });
