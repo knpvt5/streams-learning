@@ -25,7 +25,7 @@ class CustomEmitter extends EventEmitter {
   }
 }
 
-const emitter = new CustomEmitter();
+export const emitter = new CustomEmitter();
 emitter.setMaxListeners(20);
 
 // function eventfirer(eventName, arg) {
@@ -51,9 +51,9 @@ emitter.on("c", (name) => {
   console.log(`Hello, ${name}!`);
 });
 
-emitter.emit("a", "Karan");
-emitter.emit("b", "Peter");
-emitter.emit("c", "Rahul");
-emitter.emit("d", "Mukesh");
+// emitter.emit("a", "Karan");
+// emitter.emit("b", "Peter");
+// emitter.emit("c", "Rahul");
+// emitter.emit("d", "Mukesh");
 
 console.log(emitter.eventNames());
