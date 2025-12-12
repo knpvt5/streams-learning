@@ -1,5 +1,9 @@
 import fs from "fs/promises";
 
+const ab = new ArrayBuffer(8);
+
+const nb = Buffer.from(ab);
+
 const uint8Array = new Uint8Array(8);
 // const a = uint8Array.buffer;
 
