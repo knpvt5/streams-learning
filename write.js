@@ -12,9 +12,9 @@ function callLoop() {
     const canWrite = wstream.write(i.toString());
     i++;
 
-    // if (i === 10) {
-    //   wstream.end();
-    // }
+    if (i >= 10) {
+      wstream.end();
+    }
 
     if (!canWrite) {
       break;
@@ -28,15 +28,17 @@ function callLoop() {
 callLoop();
 
 wstream.on("drain", () => {
-  console.log("all drain");
+  console.log(`all chunks drained, resuming write`);
   callLoop();
 });
 
 wstream.on("finish", () => {
   console.log("File written successfully!");
+  console.log("bytes written", wstream.bytesWritten);
 });
 
-wstream.on("")
+// wstream.on("")
 
-wstream.end();
+// wstream.on("")
 
+// wstream.end();

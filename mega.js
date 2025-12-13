@@ -9,9 +9,10 @@ process.loadEnvFile("./.env");
 const filePath = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4`;
 const stats = fs.statSync(filePath);
 let totalBytes = stats.size;
-const chunkSize = 100 * 1024 * 1024;
+const chunkSize = 1 * 1024 * 1024;
 const totalChunks = Math.ceil(totalBytes / chunkSize);
 let readcount = 0;
+let uploadedBytes = 0;
 
 const storage = new Storage({
   email: process.env.MEGA_EMAIL,
@@ -37,8 +38,9 @@ storage.on("ready", async () => {
     const canWrite = upload.write(chunk);
 
     readcount++;
-    console.log(Math.ceil((readcount / totalChunks) * 100) + "% completed");
+    console.log(Math.ceil((rstream.bytesRead / totalBytes) * 100) + "% completed");
     console.log(canWrite);
+    // console.log("read bytes", rstream.bytesRead);
 
     if (!canWrite) {
       rstream.pause();
@@ -57,8 +59,18 @@ storage.on("ready", async () => {
     console.log("Read stream ended");
   });
 
-  upload.on("chunk", (bytes) => {
-    console.log(`Chunk uploaded: ${bytes} bytes`);
+  upload.on("progress", (bytes) => {
+    // uploadedBytes += bytes;
+    // console.log("uploaded bytes", upload.bytesWritten);
+    // console.log("uploaded bytes", upload.uploadedBytes);
+    const uploadedBytes = stats.bytesLoaded;
+    const percent = Math.ceil((uploadedBytes / totalBytes) * 100);
+
+    console.log(
+      `📤 Upload progress: ${percent}% (${(uploadedBytes / 1024 / 1024).toFixed(
+        2
+      )} MB)`
+    );
   });
 
   upload.on("complete", (file) => {
