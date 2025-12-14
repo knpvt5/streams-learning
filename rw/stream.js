@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { emitter } from "./event.js";
+import { emitter } from "../event.js";
 
 // "C:\Users\karan_pnrp70e\Videos\Stree 2 Sarkate Ka Aatank (2024) [720p] [WEBRip] [YTS.MX]\Stree.2.Sarkate.Ka.Aatank.2024.720p.WEBRip.x264.AAC-[YTS.MX].mp4"
 // "C:\Users\karan_pnrp70e\Videos\Stranger.Things.S05E03.1080p.WEB.h264-ETHEL[EZTVx.to].mkv"

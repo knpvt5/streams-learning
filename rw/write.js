@@ -9,7 +9,7 @@ let i = 0;
 
 function callLoop() {
   while (i < 10) {
-    const canWrite = wstream.write(i.toString());
+    const canWrite = wstream.write(`${i.toString()}`);
     i++;
 
     if (i >= 10) {
@@ -23,6 +23,7 @@ function callLoop() {
       `Wrote Chunk ${i}, canWrite: ${canWrite}, writableLength: ${wstream.writableLength}`
     );
   }
+
 }
 
 callLoop();

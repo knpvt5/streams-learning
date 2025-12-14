@@ -1,25 +1,19 @@
 import fs from "node:fs";
 
-console.log(fs.statSync("utils"))
+const filePath = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4`;
+
+const rstream = fs.createReadStream(filePath, { highWaterMark: 64 * 1024 });
+const wstream = fs.createWriteStream("output_copy.mkv", {
+  highWaterMark: 64 * 1024,
+});
+
+rstream.pipe(wstream);
 
 
-const allowedList = new Set([
-  ".png",
-  ".jpg",
-  ".env",
-  ".mp4",
-  ".txt",
-  ".jpeg",
-  ".gif",
-  ".webp",
-  ".svg",
-  ".pdf",
-  ".docx",
-  ".xlsx",
-  ".pptx",
-  ".mp3",
-  ".mkv",
-  ".webp",
-]);
+setTimeout(() => {
+  rstream.destroy("error in read: manual destroy for testing");
+}, 1000);
 
-    if (!allowedList.has(path.extname(item))) continue;
+rstream.on("error", (err) => {
+  console.error("Error in read stream:", err);
+});
