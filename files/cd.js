@@ -1,7 +1,23 @@
 import { v2 as cloudinary } from "cloudinary";
 import { getAllFiles } from "../utils/fe.js";
+import path from "node:path";
+import os from "node:os";
 
 process.loadEnvFile("./.env");
+
+const dirName = process.argv[2] || "OneDrive";
+const fullPath = path.join(os.homedir(), dirName);
+
+function getResourceType(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+  if ([".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"].includes(ext)) {
+    return "image";
+  } else if ([".mp4", ".avi", ".mov", ".mkv"].includes(ext)) {
+    return "video";
+  } else {
+    return "raw";
+  }
+}
 
 (async function () {
   // Configuration
@@ -11,18 +27,18 @@ process.loadEnvFile("./.env");
     api_secret: process.env.CD_API_SECRET,
   });
 
-  const filesToUpload = getAllFiles("ai");
-
+  const filesToUpload = getAllFiles(fullPath);
   console.log(
-    `Found ${filesToUpload.length} files to upload from 'ai' directory.`
+    `Found ${filesToUpload.length} files to upload from '${dirName}' directory.`
   );
 
   // Upload an image
   for (const filePath of filesToUpload) {
     try {
+      const resourceType = getResourceType(filePath);
       const uploadResult = await cloudinary.uploader.upload(filePath, {
-        public_id: path.basename(filePath, path.extname(filePath)), // Use filename as public_id
-        resource_type: "raw", // For non-image files; remove if uploading images
+        public_id: path.basename(filePath, path.extname(filePath)),
+        resource_type: resourceType,
       });
 
       console.log(`Uploaded: ${filePath} → ${uploadResult.public_id}`);
@@ -31,7 +47,7 @@ process.loadEnvFile("./.env");
       const optimizeUrl = cloudinary.url(uploadResult.public_id, {
         fetch_format: "auto",
         quality: "auto",
-        resource_type: "raw", // Add if raw
+        resource_type: resourceType,
       });
 
       console.log(`Optimized URL: ${optimizeUrl}`);
