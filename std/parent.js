@@ -1,6 +1,14 @@
 import { spawn } from "node:child_process";
+import fs from "node:fs";
 
 const child = spawn("node", ["std/child.js"]);
+
+// const filePath = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4`;
+
+const rstream = fs.createReadStream("std/parent.js", {
+  highWaterMark: 64 * 1024,
+});
+// const wstream = child.stdin;
 
 child.stdout.on("data", (data) => {
   console.log(`Child stdout: ${data}`);
@@ -10,17 +18,25 @@ child.stderr.on("data", (data) => {
   console.error(`Child stderr: ${data}`);
 });
 
-// process.stdin.pipe(child.stdin);
+// rstream.pipe(child.stdin);
 
-process.stdin.on("data", (data) => {
-  const input = data.toString().trim();
-  if (input == "end") {
-    process.stdin.end();
-    child.stdin.end();
-    return;
-  }
+rstream.on("data", (data) => {
   child.stdin.write(data);
 });
+
+rstream.on("end", () => {
+  child.stdin.end();
+});
+
+// process.stdin.on("data", (data) => {
+//   const input = data.toString().trim();
+//   if (input == "end") {
+//     process.stdin.end();
+//     child.stdin.end();
+//     return;
+//   }
+//   child.stdin.write(data);
+// });
 
 // Handle child exit
 child.on("close", (code) => {
