@@ -18,8 +18,8 @@ pipeline(rstream, wstream, (err) => {
 });
 
 wstream.on("drain", () => {
-  console.log(`all chunks drained, resuming write`);
-  console.log((wstream.bytesWritten - fileStat.size) * 100);
+  const progressPercent = (wstream.bytesWritten / fileStat.size) * 100;
+  console.log(`Progress: ${progressPercent.toFixed(2)}%`);
   //   wstream.end()
   //   wstream.destroy("error: manual destroy for testing");
 });
