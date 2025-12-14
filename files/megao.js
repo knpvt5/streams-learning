@@ -3,21 +3,27 @@ import fs from "node:fs";
 
 process.loadEnvFile("./.env");
 
+const storage = new Storage({
+  email: process.env.MEGA_EMAIL,
+  password: process.env.MEGA_PASS,
+});
+
 // "C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4"
 // C:\Users\karan_pnrp70e\Desktop\http-server\text.txt;
 
-const filePath = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4`;
+console.log("Processing", filePath);
 const stats = fs.statSync(filePath);
+
+// if (fs.lstatSync(filePath).isDirectory()) {
+//   console.log("Skipping directory", filePath);
+//   continue;
+// }
+
 let totalBytes = stats.size;
 const chunkSize = 1 * 1024 * 1024;
 const totalChunks = Math.ceil(totalBytes / chunkSize);
 let readcount = 0;
 let uploadedBytes = 0;
-
-const storage = new Storage({
-  email: process.env.MEGA_EMAIL,
-  password: process.env.MEGA_PASS,
-});
 
 storage.on("ready", async () => {
   const upload = storage.upload({
@@ -38,9 +44,13 @@ storage.on("ready", async () => {
     const canWrite = upload.write(chunk);
 
     readcount++;
-    console.log(Math.ceil((rstream.bytesRead / totalBytes) * 100) + "% completed");
+    console.log(
+      Math.ceil((rstream.bytesRead / totalBytes) * 100) +
+        "% completed Read" +
+        " " +
+        filePath
+    );
     console.log(canWrite);
-    // console.log("read bytes", rstream.bytesRead);
 
     if (!canWrite) {
       rstream.pause();
@@ -50,26 +60,19 @@ storage.on("ready", async () => {
     }
   });
 
-  //   upload.on("data", (data) => {
-  //     console.log(`Uploaded ${data.length} bytes`);
-  //   });
-
   rstream.on("end", () => {
     upload.end();
     console.log("Read stream ended");
   });
 
   upload.on("progress", (bytes) => {
-    // uploadedBytes += bytes;
-    // console.log("uploaded bytes", upload.bytesWritten);
-    // console.log("uploaded bytes", upload.uploadedBytes);
-    const uploadedBytes = stats.bytesLoaded;
+    uploadedBytes += bytes;
     const percent = Math.ceil((uploadedBytes / totalBytes) * 100);
 
     console.log(
       `📤 Upload progress: ${percent}% (${(uploadedBytes / 1024 / 1024).toFixed(
         2
-      )} MB)`
+      )} MB) from ${filePath}`
     );
   });
 
