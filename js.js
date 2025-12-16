@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const button = document.getElementById("ask");
   const input = document.getElementById("question");
 
+  const fileInput = document.getElementById("fileinput");
+
   //   debugger
   button.onclick = () => {
     console.log(input.value);
@@ -20,6 +22,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  fileInput.onchange = async (event) => {
+    const file = event.target.files[0];
+    const str = await file.text();
+    // console.log(str);
+    callServer(str);
+  };
+
   /*   button.addEventListener("click", () => {
     console.log(input.value);
   }); */
@@ -34,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
         answer.innerHTML = res;
       });
   }
-
 
   //DOm end
 });

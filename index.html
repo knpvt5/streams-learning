@@ -8,14 +8,22 @@
   <body>
     <h1>hello node.js</h1>
 
-    <textarea
-      title="ask question"
-      name="question"
-      id="question"
-      style="background-color: aquamarine"
-    ></textarea>
+    <div style="display: flex; gap: 5rem;">
+      <div>
+        <textarea
+          title="ask question"
+          name="question"
+          id="question"
+          style="background-color: aquamarine"
+        ></textarea>
+        <button title="ask" id="ask" style="cursor: pointer">send</button>
+      </div>
 
-    <button title="ask" id="ask" style="cursor: pointer">send</button>
+      <div style="background-color: cadetblue;">
+        <label for="fileinput">Choose a file:</label>
+        <input type="file" id="fileinput" />
+      </div>
+    </div>
 
     <div id="answer">output</div>
 

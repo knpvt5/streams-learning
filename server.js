@@ -1,6 +1,10 @@
 import http from "node:http";
 import fs from "node:fs/promises";
 
+const fhr = await fs.open("a.txt");
+const rs = fhr.createReadStream({
+  highWaterMark: 4,
+});
 
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -23,13 +27,28 @@ const server = http.createServer((req, res) => {
   if (req.url === "/test") {
     req.on("data", (data) => {
       console.log("test path", data);
+      res.write(data);
+      res.end();
     });
 
-    setInterval(() => {
-      res.write("This is test response\n");
-    }, 100);
+  /*   rs.on("data", (chunk) => {
+      res.write(chunk);
+
+      rs.pause();
+      setTimeout(() => {
+        rs.resume();
+      }, 100);
+    });
+
+    rs.on("end", () => {
+      res.end();
+    }); */
+
+    // setInterval(() => {
+    //   res.write("This is test response\n");
+    // }, 100);
     // res.end("test ended");
-    return
+    return;
   }
 
   res.write("server ok", () => {
