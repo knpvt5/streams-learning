@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }); */
 
   function callServer(data) {
-    fetch("http://localhost:3000/", {
+    fetch("http://localhost:3000/test", {
       method: "POST",
       body: data,
     })
