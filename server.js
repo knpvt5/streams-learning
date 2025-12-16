@@ -1,14 +1,9 @@
 import http from "node:http";
 import fs from "node:fs/promises";
 
-const fhr = await fs.open("a.txt");
-const rs = fhr.createReadStream({
-  highWaterMark: 4,
-});
-
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Content-Type", "text/txt; charset=base64");
+  res.setHeader("Content-Type", "text/txt");
   // if (req.url === "/favicon.ico") {
   //   res.end();
   //   return;
@@ -19,19 +14,24 @@ const server = http.createServer((req, res) => {
   //   fs.writeFile("received.txt", data);
   // });
 
+  const fhr = await fs.open("a.txt");
+  const rs = fhr.createReadStream({
+    highWaterMark: 4,
+  });
+
   const path = req.url;
   const origin = req.headers.origin;
   console.log(origin);
   console.log(path);
 
   if (req.url === "/test") {
-    req.on("data", (data) => {
-      console.log("test path", data);
-      res.write(data);
-      res.end();
+    req.on("data", async (data) => {
+      console.log("test path", data.toString().trim());
+      // res.write(data);
+      // res.end();
     });
 
-  /*   rs.on("data", (chunk) => {
+    rs.on("data", (chunk) => {
       res.write(chunk);
 
       rs.pause();
@@ -41,8 +41,9 @@ const server = http.createServer((req, res) => {
     });
 
     rs.on("end", () => {
+      fhr.close();
       res.end();
-    }); */
+    });
 
     // setInterval(() => {
     //   res.write("This is test response\n");
@@ -51,12 +52,27 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  res.write("server ok", () => {
-    console.log("Response sent");
+  // res.write("server ok", () => {
+  //   console.log("Response sent");
+  // });
+
+  // res.end("end data", () => {
+  //   console.log("Response finished");
+  // });
+
+  rs.on("data", (chunk) => {
+    res.write(chunk);
+
+    rs.pause();
   });
 
-  res.end("end data", () => {
-    console.log("Response finished");
+  setInterval(() => {
+    rs.resume();
+  }, 100);
+
+  rs.on("end", () => {
+    fhr.close();
+    res.end("main ended");
   });
 });
 

@@ -24,9 +24,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fileInput.onchange = async (event) => {
     const file = event.target.files[0];
-    const str = await file.text();
-    // console.log(str);
-    callServer(str);
+    console.log(file);
+    const rs = file.stream();
+    // const reader = rs.getReader();
+    // let res = await reader.read();
+    // console.log(res);
+
+    for await (const chunk of rs) {
+      console.log("chunk", chunk);
+      // callServer(chunk);
+
+      const text = new TextDecoder().decode(chunk);
+      console.log("text", text);
+
+      if (file.name.endsWith(".png")) {
+        console.log("this is photo");
+      }
+    }
+
+    // while (true) {
+    //   // const {done, value} = await reader.read();
+    //   // console.log(value);
+    //   // if (done) {
+    //   //   console.log("reading ended", done);
+    //   //   break;
+    //   // }
+    //   const res = await reader.read();
+    //   console.log(res);
+    //   if (res.done) {
+    //     console.log("reading ended", res.done);
+    //     break;
+    //   }
+    // }
+
+    // callServer(res);
   };
 
   /*   button.addEventListener("click", () => {
@@ -38,9 +69,21 @@ document.addEventListener("DOMContentLoaded", () => {
       method: "POST",
       body: data,
     })
-      .then((res) => res.text())
       .then((res) => {
+        // console.log(res);
+        // const rs = res.body;
+        // for await (const chunk of rs) {
+        //   console.log(chunk);
+        //   return chunk;
+        // }
+        return res.text();
+      })
+      .then((res) => {
+        console.log("res from server", res);
         answer.innerHTML = res;
+      })
+      .catch((err) => {
+        console.log("error", err);
       });
   }
 
