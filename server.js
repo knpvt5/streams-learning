@@ -1,6 +1,7 @@
 import http from "node:http";
 import fs from "node:fs/promises";
-import { aiChat } from "./ai/oa.js";
+// import { aiChat } from "./ai/oa.js";
+import { aiChatOr } from "./ai/ors.js";
 
 const server = http.createServer(async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -30,14 +31,14 @@ const server = http.createServer(async (req, res) => {
       console.log("test path", data.toString().trim());
       // res.write(data);
       // res.end();
-      const result = await aiChat(res, data.toString().trim());
-      console.log("result", result)
+      const result = await aiChatOr(res, data.toString().trim());
+      console.log("result", result);
       // res.write(result);
 
-      // if (result === "ENDED") {
-      //   fhr.close();
-      //   res.end();
-      // }
+      if (result === "ENDED") {
+        fhr.close();
+        res.end("sse ended");
+      }
     });
 
     // setInterval(() => {
