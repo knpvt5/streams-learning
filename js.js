@@ -69,18 +69,20 @@ document.addEventListener("DOMContentLoaded", () => {
       method: "POST",
       body: data,
     })
-      .then((res) => {
+      .then(async (res) => {
         // console.log(res);
-        // const rs = res.body;
-        // for await (const chunk of rs) {
-        //   console.log(chunk);
-        //   return chunk;
-        // }
-        return res.text();
-      })
-      .then((res) => {
-        console.log("res from server", res);
-        answer.innerHTML = res;
+        const rs = res.body;
+        answer.innerText = "";
+        for await (const chunk of rs) {
+          console.log("server chuck", chunk);
+          for (const byte of chunk) {
+            const decoded = new TextDecoder().decode(new Uint8Array([byte]));
+            const line = decoded.split("\n")
+            console.log(line)
+          }
+
+          answer.innerText = answer.innerText + new TextDecoder().decode(chunk);
+        }
       })
       .catch((err) => {
         console.log("error", err);

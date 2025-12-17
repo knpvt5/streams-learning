@@ -12,7 +12,7 @@ const openai = new OpenAI({
 });
 
 const completion = await openai.chat.completions.create({
-  model: "x-ai/grok-4.1-fast:free",
+  model: "mistralai/mistral-small-creative",
   messages: [
     {
       role: "user",

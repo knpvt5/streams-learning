@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "cloudinary": "^2.8.0",
-    "megajs": "^1.3.9"
+    "megajs": "^1.3.9",
+    "openai": "^6.14.0"
   }
 }
