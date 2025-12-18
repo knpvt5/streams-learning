@@ -67,5 +67,12 @@ stream.on("end", () => {
   // console.log(stream.path);
 });
 
+stream.on("")
+wstream.on("finish", () => {
+  console.log("File written successfully!");
+  console.log("bytes written", wstream.bytesWritten);
+  wstream.end();
+});
+
 console.log("end");
 // emitter.emit("a", "Karan");

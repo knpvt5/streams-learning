@@ -1,90 +1,47 @@
 import { Storage } from "megajs";
 import fs from "node:fs";
 import { getAllFiles } from "../utils/fe.js";
+import path from "node:path";
+import os from "node:os";
+import { pipeline } from "node:stream/promises";
 
 process.loadEnvFile("./.env");
+
+// const dirName = process.argv[2] || "OneDrive";
+// const fullPath = path.join(os.homedir(), dirName);
+// const filePath = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4`;
 
 const storage = new Storage({
   email: process.env.MEGA_EMAIL,
   password: process.env.MEGA_PASS,
 });
 
-// "C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4"
-// C:\Users\karan_pnrp70e\Desktop\http-server\text.txt;
-
 const filePathArr = getAllFiles(".");
-// const filePath = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4`;
 
-for (const filePath of filePathArr) {
-  console.log("Processing", filePath);
-  const stats = fs.statSync(filePath);
+storage.on("ready", async () => {
+  console.log("Storage is ready. Starting sequential upload...");
 
-  if (stats.isDirectory()) {
-    console.log("Skipping directory", filePath);
-    continue;
-  }
+  for (const filePath of filePathArr) {
+    console.log("Processing", filePath);
 
-  // if (fs.lstatSync(filePath).isDirectory()) {
-  //   console.log("Skipping directory", filePath);
-  //   continue;
-  // }
+    const stats = fs.statSync(filePath);
+    const totalBytes = stats.size;
 
-  let totalBytes = stats.size;
-  const chunkSize = 1 * 1024 * 1024;
-  const totalChunks = Math.ceil(totalBytes / chunkSize);
-  let readcount = 0;
-  let uploadedBytes = 0;
-
-  storage.on("ready", async () => {
     const upload = storage.upload({
-      name: filePath.split("\\").at(-1),
-      size: stats.size,
-      // maxChunkSize: chunkSize,
-      // initialChunkSize: chunkSize,
+      name: path.basename(filePath),
+      size: totalBytes,
     });
 
-    //   console.log(upload);
-
-    // fs.createReadStream("text.txt").pipe(upload);
-    const rstream = fs.createReadStream(filePath, {
-      highWaterMark: chunkSize,
-    });
-
-    rstream.on("data", (chunk) => {
-      const canWrite = upload.write(chunk);
-
-      readcount++;
-      console.log(
-        Math.ceil((rstream.bytesRead / totalBytes) * 100) +
-          "% completed Read" +
-          " " +
-          filePath
-      );
-      console.log(canWrite);
-
-      if (!canWrite) {
-        rstream.pause();
-        upload.once("drain", () => {
-          rstream.resume();
-        });
-      }
-    });
-
-    rstream.on("end", () => {
-      upload.end();
-      console.log("Read stream ended");
-    });
+    let uploadedBytes = 0;
 
     upload.on("progress", (bytes) => {
-      uploadedBytes += bytes;
-      const percent = Math.ceil((uploadedBytes / totalBytes) * 100);
+      uploadedBytes = bytes; // ✅ absolute value
+      const percent = Math.floor((uploadedBytes / totalBytes) * 100);
 
       console.log(
-        `📤 Upload progress: ${percent}% (${(
-          uploadedBytes /
-          1024 /
-          1024
-        ).toFixed(2)} MB) from ${filePath}`
+        `📤 ${percent}% (${(uploadedBytes / 1024 / 1024).toFixed(
+          2
+        )} MB) → ${filePath}`
       );
     });
 
@@ -92,8 +49,20 @@ for (const filePath of filePathArr) {
       console.log("Uploaded:", file.name);
     });
 
-    upload.on("error", (err) => {
-      console.error("Upload error:", err);
+    upload.on("error", console.error);
+
+    const rstream = fs.createReadStream(filePath, {
+      highWaterMark: 1 * 1024 * 1024,
     });
-  });
-}
+
+    // ⬇️ THIS is the missing piece
+    await pipeline(rstream, upload);
+
+    console.log("Pipeline finished for", filePath);
+  }
+
+  console.log("All uploads finished");
+});
+
+storage.on("close", console.log);
+storage.on("error", console.error);

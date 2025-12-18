@@ -31,24 +31,38 @@ const allowedFilesList = new Set([
 ]);
 
 export function getAllFiles(dirPath) {
-  let files = [];
+  try {
+    let files = [];
 
-  const items = fs.readdirSync(dirPath);
-  for (const item of items) {
-    if (ignoreFolderList.has(item)) continue;
-    const fullPath = path.join(dirPath, item);
+    const stats = fs.statSync(dirPath);
 
-    const stats = fs.statSync(fullPath);
-
-    if (stats.isDirectory()) {
-      files = [...files, ...getAllFiles(fullPath)];
-    } else {
-      if (!allowedFilesList.has(path.extname(fullPath))) continue;
-      files.push(fullPath);
+    if (!stats.isDirectory()) {
+      if (allowedFilesList.has(path.extname(dirPath))) {
+        return [dirPath];
+      } else {
+        return [];
+      }
     }
-  }
 
-  return files;
+    const items = fs.readdirSync(dirPath);
+    for (const item of items) {
+      if (ignoreFolderList.has(item)) continue;
+      const fullPath = path.join(dirPath, item);
+
+      const stats = fs.statSync(fullPath);
+
+      if (stats.isDirectory()) {
+        files = [...files, ...getAllFiles(fullPath)];
+      } else {
+        if (!allowedFilesList.has(path.extname(fullPath))) continue;
+        files.push(fullPath);
+      }
+    }
+
+    return files;
+  } catch (error) {
+    throw error;
+  }
 }
 
 // console.log("Working directory:", process.cwd());
