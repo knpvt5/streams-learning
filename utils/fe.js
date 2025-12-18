@@ -14,10 +14,9 @@ const ignoreFolderList = new Set([".git", ".env", "node_modules"]);
 const allowedFilesList = new Set([
   ".png",
   ".jpg",
-  ".env",
+  ".jpeg",
   ".mp4",
   ".txt",
-  ".jpeg",
   ".gif",
   ".webp",
   ".svg",
@@ -28,6 +27,8 @@ const allowedFilesList = new Set([
   ".mp3",
   ".mkv",
   ".webp",
+  ".heic",
+  ".dng",
 ]);
 
 export function getAllFiles(dirPath) {

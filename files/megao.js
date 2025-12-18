@@ -7,8 +7,8 @@ import { pipeline } from "node:stream/promises";
 
 process.loadEnvFile("./.env");
 
-// const dirName = process.argv[2] || "OneDrive";
-// const fullPath = path.join(os.homedir(), dirName);
+const dirName = process.argv[2] || "Onedrive";
+const fullPath = path.join(os.homedir(), dirName);
 // const filePath = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4`;
 
 const storage = new Storage({
@@ -16,7 +16,7 @@ const storage = new Storage({
   password: process.env.MEGA_PASS,
 });
 
-const filePathArr = getAllFiles(".");
+const filePathArr = getAllFiles(fullPath);
 
 storage.on("ready", async () => {
   console.log("Storage is ready. Starting sequential upload...");
