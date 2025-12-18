@@ -45,7 +45,9 @@ storage.on("ready", async () => {
           const percent = Math.ceil((uploadedBytes / totalBytes) * 100);
           console.log(
             `📤 Upload progress: ${percent}% (${(
-              uploadedBytes / 1024 / 1024
+              uploadedBytes /
+              1024 /
+              1024
             ).toFixed(2)} MB) from ${filePath}`
           );
         });
@@ -60,7 +62,7 @@ storage.on("ready", async () => {
         // Use the promise-based pipeline
         pipeline(rstream, upload).catch(reject);
       });
-      
+
       console.log(`Finished processing ${filePath}`);
     } catch (err) {
       console.error(`Failed to upload ${filePath}:`, err);

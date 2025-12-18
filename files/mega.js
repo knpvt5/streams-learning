@@ -7,8 +7,8 @@ import { pipeline } from "node:stream/promises";
 
 process.loadEnvFile("./.env");
 
-// const dirName = process.argv[2] || "OneDrive";
-// const fullPath = path.join(os.homedir(), dirName);
+const dirName = process.argv[2] || "OneDrive";
+const fullPath = path.join(os.homedir(), dirName);
 // const filePath = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4`;
 
 const storage = new Storage({
@@ -56,7 +56,9 @@ storage.on("ready", async () => {
     });
 
     // ⬇️ THIS is the missing piece
-    await pipeline(rstream, upload);
+    pipeline(rstream, upload);
+
+    await  upload.complete;
 
     console.log("Pipeline finished for", filePath);
   }
