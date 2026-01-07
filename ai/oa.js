@@ -39,7 +39,7 @@ export async function aiChat(res, question) {
     res.write(`DATA: ${content} \n`);
   }
 
-  res.end("ENDED");
+  // res.end("ENDED");
   return "ENDED";
 }
 

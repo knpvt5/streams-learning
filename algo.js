@@ -1,4 +1,4 @@
-const files = ["file1.txt", "file2.txt", "file3.txt"];
+const files = ["file1.txt", "file2.txt", "file3.txt", ];
 
 // Step 1: Build array of async Promises (not started yet)
 const uploadPromises = files.map(async (file) => {

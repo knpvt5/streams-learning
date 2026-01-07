@@ -1,7 +1,7 @@
 import http from "node:http";
 import fs from "node:fs/promises";
-// import { aiChat } from "./ai/oa.js";
-import { aiChatOr } from "./ai/ors.js";
+import { aiChat } from "./ai/oa.js";
+// import { aiChatOr } from "./ai/ors.js";
 
 const server = http.createServer(async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -31,11 +31,16 @@ const server = http.createServer(async (req, res) => {
       console.log("test path", data.toString().trim());
       // res.write(data);
       // res.end();
-      const result = await aiChatOr(res, data.toString().trim());
+      const result = await aiChat(res, data.toString().trim());
       console.log("result", result);
       // res.write(result);
 
       if (result === "ENDED") {
+        const clientIP = req.socket.remoteAddress;
+        const clientPort = req.socket.remotePort;
+
+        console.log("Client IP:", clientIP);
+        console.log("Client Port:", clientPort);
         fhr.close();
         res.end("sse ended");
       }
@@ -50,7 +55,7 @@ const server = http.createServer(async (req, res) => {
 
   // res.write("server ok", () => {
   //   console.log("Response sent");
-  // });
+  // });l
 
   // res.end("end data", () => {
   //   console.log("Response finished");
@@ -72,7 +77,7 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-server.listen(3000, () => {
+server.listen(3000, "localhost", () => {
   console.log("Listening on http://localhost:3000");
 });
 // }
