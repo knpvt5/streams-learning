@@ -1,7 +1,7 @@
 import dgram from "node:dgram";
 import fs from "node:fs";
 
-const ws = fs.createWriteStream("output.mkv");
+// const ws = fs.createWriteStream("output.mkv");
 
 const socket = dgram.createSocket({ type: "udp4", reuseAddr: true });
 
@@ -16,11 +16,11 @@ socket.on("error", (err) => {
 
 socket.on("message", (msg, rinfo) => {
   // lastClient = rinfo;
-  // console.log(`\nPeer ${rinfo.address}:${rinfo.port} -> ${msg}`);
-  if (msg === "EOF") {
-    socket.send("File received", rinfo.port, rinfo.address);
-  }
-  ws.write(msg);
+  console.log(`\nPeer ${rinfo.address}:${rinfo.port} -> ${msg}`);
+  // if (msg === "EOF") {
+  //   socket.send("File received", rinfo.port, rinfo.address);
+  // }
+  // ws.write(msg);
   // showPrompt();
 });
 
