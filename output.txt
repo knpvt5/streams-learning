@@ -1,0 +1,37 @@
+(from "argue")
+
+Dialectic (the art of logical debate)
+
+Parley AI (parley means a discussion between enemies)
+
+Rebuttal
+
+Descriptive
+
+Digital Agora (the "agora" was the public debate square in ancient Greece)
+
+Bot vs. Bot
+
+The Debate Engine
+
+SynthoSpeak (from "synthetic")
+
+i have already opened one file via file explorer , and when again i open a file with node program it is giving me 3 integer? it should have given me 4 ??
+File descriptors are per-process, not system-wide.
+
+- You opening a file in File Explorer
+- And Node.js opening a file in your Node process
+these happen in different processes, with different FD tables.
+
+1️⃣ When you open a file in File Explorer
+Windows Explorer is one process
+It has its own FD table
+That file gets an FD inside explorer.exe
+Your Node process knows nothing about it
+📌 No sharing, no counting.
+
+2️⃣ When you run your Node.js program
+Node starts as a new process.
+At startup, Node already has: stdin = 0, stdout = 1, stderr = 2
+
+FD = 

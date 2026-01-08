@@ -2,3 +2,7 @@
 .env
 #node modules
 node_modules/
+
+#video
+*.mp4
+*.mkv

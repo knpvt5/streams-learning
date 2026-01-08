@@ -1,7 +1,17 @@
 import dgram from "node:dgram";
 import { sport, shost } from "./udps.js";
 
+import fs from "node:fs";
+const filepath = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Screen Recording 2025-11-04 090852.mp4`;
+// const filepath = String.raw`C:\Users\karan_pnrp70e\Desktop\marketing.txt`
+
+const rstream = fs.createReadStream(filepath, {
+  highWaterMark: 1024,
+});
+
 const socket = dgram.createSocket("udp4");
+
+// const showPrompt = () => process.stdout.write("You> ");
 
 socket.on("error", (err) => {
   console.error(`Socket error:\n${err.stack}`);
@@ -9,27 +19,42 @@ socket.on("error", (err) => {
 });
 
 socket.on("message", (msg, rinfo) => {
-  //   console.log(`server->: ${msg} from ${rinfo.address}:${rinfo.port}`);
-  console.log(`server->: ${msg}`);
+  console.log(`\nServer ${rinfo.address}:${rinfo.port} -> ${msg}`);
+  // showPrompt();
 });
 
 socket.on("listening", () => {
   const address = socket.address();
   console.log(`Socket listening on ${address.address}:${address.port}`);
+  // showPrompt();
 });
 
 // const cport = 5000;
 // const chost = "127.0.0.1";
 
-process.stdout.write("Enter some input: ");
+// process.stdin.on("data", (data) => {
+//   socket.send(data, sport, shost, (err) => {
+//     if (err) {
+//       console.error(`Send error:\n${err}`);
+//     }
+//   });
 
-process.stdin.on("data", (data) => {
-  socket.send(data, sport, "10.144.116.121", (err, bytes) => {
+//   showPrompt();
+// });
+
+rstream.on("data", (chunk) => {
+  socket.send(chunk, sport, shost, (err) => {
     if (err) {
       console.error(`Send error:\n${err}`);
     }
-    // console.log("byte send", bytes);
   });
+});
 
-  process.stdout.write("Enter some input: ");
+rstream.on("end", () => {
+  socket.send("EOF", sport, shost, (err) => {
+    if (err) {
+      console.error(`Send error:\n${err}`);
+    }
+  });
+  socket.close();
 });
