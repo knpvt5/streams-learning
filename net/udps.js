@@ -22,7 +22,7 @@ socket.on("message", (msg, rinfo) => {
       // console.log("byte send", bytes);
     });
 
-    process.stdout.write("Enter some input: ");
+    console.log("Enter some input: ");
   });
 });
 
@@ -31,7 +31,7 @@ socket.on("listening", () => {
   console.log(`Socket listening on ${address.address}:${address.port}`);
 });
 
-export const port = 4000;
-export const host = "127.0.0.1";
+export const sport = 4000;
+export const shost = "127.0.0.1";
 
-socket.bind(port);
+socket.bind(sport);
