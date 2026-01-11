@@ -1,8 +1,13 @@
 import fs from "node:fs";
 
-const rstream = fs.createReadStream("text.txt", { highWaterMark: 4 });
-const wstream = fs.createWriteStream("output.txt", { highWaterMark: 4 });
+const rstream = fs.createReadStream("C:\Users\karan_pnrp70e\Desktop\http-server\cd\text.txt", { highWaterMark: 4 });
+// const wstream = fs.createWriteStream("output.txt", { highWaterMark: 4 });
 
-wstream.end();
+rstream.on("data", (chunk) => {
+  console.log(`Read chunk: ${chunk.toString()}`);
+  // wstream.write(chunk);
+});
 
-console.log(rstream.readable, wstream.writable)
+// wstream.end();
+
+// console.log(rstream.readable, wstream.writable)

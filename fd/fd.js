@@ -1,6 +1,6 @@
 import fs from "node:fs";
 
-const fd = fs.openSync("test.txt");
+const fd = fs.openSync("cd\\text.txt");
 console.log(fd);
 
 const nb = Buffer.alloc(10);
