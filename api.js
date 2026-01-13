@@ -19,12 +19,6 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  if (req.method === "GET" && pathname === "/golu") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ query: "golu is motherfucker bitch" }));
-    return;
-  }
-
   res.writeHead(200, { "Content-Type": "application/json" });
   res.end(JSON.stringify({ status: "server running successfully" }));
 });

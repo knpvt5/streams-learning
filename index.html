@@ -8,7 +8,7 @@
   <body>
     <h1>hello node.js</h1>
 
-    <div style="display: flex; gap: 5rem;">
+    <div style="display: flex; gap: 5rem">
       <div>
         <textarea
           title="ask question"
@@ -19,16 +19,23 @@
         <button title="ask" id="ask" style="cursor: pointer">send</button>
       </div>
 
-      <div style="background-color: cadetblue;">
-        <label for="fileinput">Choose a file:</label>
-        <input type="file" id="fileinput" />
+      <div style="background-color: cadetblue">
+        <form
+          action="http://10.144.116.121:5000"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <label for="fileinput">Choose a file:</label>
+          <input type="file" id="fileinput" name="file" />
+          <button type="submit">Upload</button>
+        </form>
       </div>
     </div>
 
     <div id="answer">output</div>
 
-    <img src="" alt="img">
+    <img src="" alt="img" />
 
-    <script src="js.js"></script>
+    <!-- <script src="cjs.js" type="module"></script> -->
   </body>
 </html>
