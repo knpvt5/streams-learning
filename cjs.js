@@ -1,4 +1,7 @@
-const res = await fetch("http://10.144.116.121:5000");
+const res = await fetch("http://10.96.147.138:3000", {
+  method: "POST",
+  body: "Hello from client",
+});
 
 console.log({res})
 

@@ -2,14 +2,14 @@
 import { open } from "node:fs/promises";
 import net from "node:net";
 
-// const filePath = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Recording 2025-11-04 091942.mp4`;
-const filePath = String.raw`C:\Users\karan_pnrp70e\Videos\Frankenstein (2025) [1080p] [WEBRip] [5.1] [YTS.MX]\Frankenstein.2025.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4`;
+const fp = String.raw`C:\Users\karan_pnrp70e\Desktop\Captures\screenrecording\Recording 2025-11-04 091942.mp4`;
+// const fp = String.raw`C:\Users\karan_pnrp70e\Videos\Frankenstein (2025) [1080p] [WEBRip] [5.1] [YTS.MX]\Frankenstein.2025.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4`;
 
 // const ws = createWriteStream("output.mkv")
 
 const server = net.createServer(async (socket) => {
-  const fh = await open("a.txt");
-  const rs = fh.createReadStream({ highWaterMark: 5 });
+  const fh = await open(fp);
+  const rs = fh.createReadStream();
   const { size } = await fh.stat();
 
   const clientAddress = `${socket.remoteAddress}:${socket.remotePort}`;
@@ -26,7 +26,7 @@ const server = net.createServer(async (socket) => {
   // setTimeout(() => {
   //   socket.write("hello");
   // }, 1000);
-  // rs.pipe(socket);
+  rs.pipe(socket);
 
   // socket.end();
 
